@@ -1,28 +1,38 @@
 let dataPosts = [];
 let cutPosts = 4;
 
+const loadBtn = document.querySelector(".load-btn");
+const loading = document.querySelector(".loading-img")
+const loadingWrapper = document.querySelector(".loading-wrapper")
+
+loadBtn.addEventListener("click", () => {
+    cutPosts += 4;
+    printPost(dataPosts, cutPosts)
+    if(dataPosts.length === cutPosts) {
+        loadBtn.style.visibility = "hidden"
+    }
+})
+
 
 let postsContainer = document.querySelector(".posts-container");
 
 function fetchData() {
+// little simulation if we need to wait more for the data
 setTimeout(() => {
     fetch("data.json")
     .then(res => res.json())
     .then(data => {
         dataPosts = [...data]
-        printPost(dataPosts)
+        loadingWrapper.style.display = "none"
+        printPost(dataPosts, cutPosts)
     })
-}, 1000)
+}, 500)
 }
 
 
-
-
-
-
-function printPost(arr) {
+function printPost(arr, cut) {
     postsContainer.innerHTML = ""
-    arr.forEach(({ image, caption, date, likes, name, profile_image}) => {
+    arr.slice(0, cut).forEach(({ image, caption, date, likes, name, profile_image}) => {
     let likeCounter = 0;
     //  returns date format of each post
      const formatedDate = formatPostDate(date)
@@ -74,7 +84,7 @@ function printPost(arr) {
      heartImg.classList.add("heartImg")
      let likesNumber = document.createElement("span")
      likesNumber.classList.add("likesNumber")
-     likesNumber.innerText = likes
+     likesNumber.innerText = parseInt(likes) + likeCounter
      heartImg.setAttribute("src", "logos/heart.svg")
      likesBox.append(heartImg, likesNumber)
      descriptionBox.append(descriptionText, likesBox)
@@ -85,12 +95,12 @@ function printPost(arr) {
     })
      postBox.append(profilePartBox, imageBox, descriptionBox)
     })
+   
 }
-
 
 function likePostFn(e, counter) {
   if(!counter) {
-      counter++;
+      counter++
     e.currentTarget.classList.add("redHeart")
     console.log(counter)
   } else {
@@ -99,26 +109,31 @@ function likePostFn(e, counter) {
   }
 }
 
-fetchData(cutPosts)
-
-
+fetchData()
+// Format post date
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Okt", "Nov", "Dec"]
 
-// Format post date
+
 function formatPostDate(date) {
-  
    const year = new Date(date).getFullYear()
    const monthNumber = new Date(date).getMonth()
    const month = months[monthNumber]
    const day = date.slice(8, 10)
 
-    return `${day} ${month} ${year}`;
+   return `${day} ${month} ${year}`;
 }
 
 
 window.addEventListener("load", () => {
     if(!dataPosts.length) {
-        postsContainer.innerText = "LOADING"
-    }
+        let deg = 5;
+      const interval = setInterval(() => {
+           loading.style.transform = `rotate(${deg}deg)`;
+           deg += 5;
+           dataPosts.length && clearInterval(interval)
+         }, 100)
+     }
 })
+
+
 
