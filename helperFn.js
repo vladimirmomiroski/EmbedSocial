@@ -25,6 +25,7 @@ function printPost(arr, cut) {
     img.setAttribute("src", image)
     img.classList.add("image")
     imageBox.append(img)
+    
 
     // Post description part
      let descriptionBox = document.createElement("div");
@@ -32,29 +33,31 @@ function printPost(arr, cut) {
      descriptionText.classList.add("descriptionText")
      let likesBox = document.createElement("div")
      likesBox.classList.add("likesBox")
-     let heartImg = document.createElement("img")
-     heartImg.classList.add("heartImg")
+     let heart = document.createElement("span")
+     heart.classList.add("heartImg")
      let likesNumber = document.createElement("span")
      likesNumber.classList.add("likesNumber")
      likesNumber.innerText = likes
-     heartImg.setAttribute("src", "logos/heart.svg")
-     likesBox.append(heartImg, likesNumber)
+     heart.innerHTML = `<i class="fa fa-heart"></i>`
+     likesBox.append(heart, likesNumber)
      descriptionBox.append(descriptionText, likesBox)
-     descriptionText.innerText = "#" + caption.slice(0,100)
+     descriptionText.innerText = returnText(caption)
 
-    heartImg.addEventListener("click", likePostFn)
+    heart.addEventListener("click", likePostFn)
+    imageBox.addEventListener("click", modalPost)
 
      postBox.append(profilePartBox, imageBox, descriptionBox)
 
      if(counter) {
-         heartImg.classList.add("redHeart")
+         heart.classList.add("redHeart")
      }
     })
    
 }
 
-// profile part of each post card
+// profile part of each post card and reusable for the modal
 function profilePart(img, name, date) {
+    const formatedDate = formatPostDate(date)
     let profileImagePart = document.createElement("div");
     profileImagePart.classList.add("profileImgPart")
     let profileImage = document.createElement("img");
@@ -70,7 +73,7 @@ function profilePart(img, name, date) {
     profileDate.classList.add("profileDate")
     profileNameAndDate.append(profileName, profileDate)
     profileName.innerText = name;
-    profileDate.innerText = date;
+    profileDate.innerText = formatedDate;
     
     let logoWrapper = document.createElement("div")
     let profileLogoPart = document.createElement("img");
@@ -81,10 +84,6 @@ function profilePart(img, name, date) {
     profileImagePart.append(profileImgNameDate, logoWrapper)
    
     return profileImagePart;
-}
-
-function imagePart(img) {
-
 }
 
 // format date for each post
@@ -98,4 +97,69 @@ function formatPostDate(date) {
  
     return `${day} ${month} ${year}`;
  }
+
+ //  modal fn
+ function modalPost(e) {
+     e.stopPropagation()
+   modalWrapper.innerHTML = ""
+   const cardId = +e.currentTarget.parentNode.id;
+   const {id, image, profile_image, name, date, caption, likes, counter} = findIndex(dataPosts, cardId)
+  
+   modalWrapper.style.display = "flex";
+   modalWrapper.setAttribute("id", id)
+   
+   const imgBox = document.createElement("div")
+   const postInfo = document.createElement("div")
+   postInfo.classList.add("postInfoModal")
+   imgBox.classList.add("modalImgBox");
+   const img = document.createElement("img")
+   img.classList.add("imgModal");
+   img.setAttribute("src", image)
+   imgBox.append(img)
+   const profileParts = profilePart(profile_image, name, date)
+   const captionText = document.createElement("p");
+   captionText.classList.add("modalCaption")
+   captionText.innerText = caption;
+   const likesInfo = document.createElement("div")
+   likesInfo.classList.add("likesInfoModal")
+   likesInfo.setAttribute("id", id)
+   const heart = document.createElement("span")
+   heart.innerHTML = `<i class="fa fa-heart"></i>`;
+   heart.classList.add("heartModal")
+   const likesText = document.createElement("p")
+   likesText.classList.add("likesTextModal")
+   likesText.innerText = likes
+   likesInfo.append(heart, likesText)
+   postInfo.append(profileParts, captionText, likesInfo)
+   profileParts.classList.add("profilePartsModal")
+   modalWrapper.append(imgBox, postInfo)
+   overlay.style.display = "block"
+
+   if(counter) {
+       heart.classList.add("redHeart")
+}
+   heart.addEventListener("click", (e) => {
+    likePostFn(e, id),
+    modalPost(e)
+
+   })
+   
+ }
+
+//  find post
+ function findIndex(arr, id) {
+     const postCard = arr.find(el => el.id === id)
+     return postCard
+ }
+
+//  caption text
+ function returnText(text) {
+      if(text.length) {
+          return `#${text.slice(0, 100)}...`;
+      } else {
+          return "No caption"
+      }
+ }
+
+
  

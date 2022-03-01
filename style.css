@@ -10,15 +10,15 @@
 .posts-container {
     width:95%;
     margin:0 auto;
-    padding:4rem 0;
+    padding:4rem 0 2rem;
     display:grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 0.6rem;
+    grid-gap: 0.8rem;
 }
 
 .load-more-wrapper {
     text-align: center;
-    padding:1.5rem 0;
+    padding:1rem 0 3.5rem;
 }
 
 .load-btn {
@@ -35,8 +35,10 @@
 /* Styling posts */
 
 .postBox {
-    border:1px solid rgb(218, 215, 215);
-    padding:0.7rem;
+    padding:0.7rem 0.7rem 2rem;
+    position:relative;
+    -webkit-box-shadow: 0 0 3px rgb(173, 173, 173);
+        box-shadow: 0 0 3px rgb(173, 173, 173);
 }
 
 /* Profile part */
@@ -85,6 +87,12 @@
 
 .imgBox {
     margin-top:0.8rem;
+    cursor: pointer;
+}
+
+.imgBox:hover {
+ opacity: 0.8;
+ transition: .2s ease-in-out;
 }
 
 .image {
@@ -98,25 +106,43 @@
 .descriptionText {
     margin:0.8rem 0;
     padding-bottom:1rem;
+    margin-bottom:1.2rem;
     border-bottom:1px solid rgb(211, 211, 211);
+    font-size:14px;
 }
 
 .likesBox {
     display:flex;
 }
 
+.likesNumber, .heartImg {
+    position:absolute;
+}
+
 .likesNumber {
     margin-left:0.2rem;
+    bottom:0.7rem;
+    left:1.8rem;
 }
 
 .heartImg {
     cursor: pointer;
+    bottom:0.7rem;
+    left:0.7rem;
 }
 
 .redHeart {
-    background-color:  rgb(192, 49, 49);
+    color:  rgb(192, 49, 49);
 }
 
+.darkOverlay {
+    position:fixed;
+    top:0;
+    width:100%;
+    height:100vh;
+    background-color: rgb(0,0,0,0.6);
+    display:none;
+}
 /* loading */
 
 .loading-wrapper {
@@ -129,4 +155,115 @@
 .loading-img {
     width:150px;
     height:150px;
+}
+
+/* Modal styling */
+
+.modalWrapper {
+    width:60%;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    padding:0.7rem;
+    display: none;
+    align-items: start;
+    background-color: #fff;
+    border-radius: 0.1rem;
+    z-index: 1;
+    
+}
+
+.modalImgBox {
+    width:60%;
+    height:450px;
+    display:flex;
+}
+
+.postInfoModal {
+    width:40%;
+    display:flex;
+    flex-direction: column;
+    padding-left:0.7rem;
+}
+
+.imgModal {
+    width:100%;
+    object-fit: cover;
+}
+
+.profilePartsModal {
+    padding:0.6rem 0;
+    border-bottom:1px solid rgb(180, 179, 179);
+}
+
+.modalCaption {
+    font-size:13px;
+    padding-top:1.4rem;
+    text-align: justify;
+}
+
+.likesInfoModal {
+    margin:0.5rem 0;
+    display:flex;
+}
+
+.likesTextModal {
+   margin-left:0.2rem;
+}
+
+.heartModal {
+    cursor: pointer;
+}
+/* arrow */
+
+.arrow-up {
+    width:60px;
+    height:60px;
+    border:3px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius:1rem;
+    cursor: pointer;
+    position:fixed;
+    border-radius:50%;
+    bottom:2rem;
+    right:2rem;
+    display:none;
+}
+.arrow {
+    width:100%;
+}
+
+/* Media queries */
+
+@media (max-width:1300px) {
+    .modalWrapper {
+        width:70%;
+    }
+}
+
+@media (max-width: 992px) {
+    .posts-container {
+        width:90%;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap:1rem;
+    }
+    .modalWrapper {
+        width:90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .posts-container {
+        width:85%;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .posts-container {
+        width:90%;
+    }
 }
