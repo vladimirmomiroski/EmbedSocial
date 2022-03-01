@@ -41,13 +41,14 @@
 
 /* Profile part */
 
-.profilePartBox {
-    display:flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
 .profileImgPart {
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profileImgNameDate {
     display:flex;
     align-items: center;
 }
@@ -128,10 +129,4 @@
 .loading-img {
     width:150px;
     height:150px;
-}
-
-.gg-arrow-up-r {
-    position:fixed;
-    bottom:0;
-    right:0;
 }
