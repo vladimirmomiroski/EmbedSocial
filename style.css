@@ -242,13 +242,15 @@
     .modalWrapper {
         width:70%;
     }
+    .posts-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 992px) {
     .posts-container {
         width:90%;
         grid-template-columns: repeat(2, 1fr);
-        grid-gap:1rem;
     }
     .modalWrapper {
         width:90%;
