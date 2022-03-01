@@ -22,7 +22,18 @@ setTimeout(() => {
     fetch("data.json")
     .then(res => res.json())
     .then(data => {
-        dataPosts = [...data]
+        const dataFromStorage = localStorage.getItem("dataPosts")
+        if(dataFromStorage) {
+            dataPosts = JSON.parse(dataFromStorage)
+        } else {
+            dataPosts = data.map(el => {
+                let randomId = Date.now() + Math.random()
+                el.id = randomId;
+                el.counter = 0;
+                return el
+            })
+        }
+      
         loadingWrapper.style.display = "none"
         printPost(dataPosts, cutPosts)
     })
@@ -32,8 +43,7 @@ setTimeout(() => {
 
 function printPost(arr, cut) {
     postsContainer.innerHTML = ""
-    arr.slice(0, cut).forEach(({ image, caption, date, likes, name, profile_image}) => {
-    let likeCounter = 0;
+    arr.slice(0, cut).forEach(({ id, image, caption, date, likes, name, profile_image, counter}) => {
     //  returns date format of each post
      const formatedDate = formatPostDate(date)
 
@@ -41,6 +51,7 @@ function printPost(arr, cut) {
      let postBox = document.createElement("div");
      postsContainer.append(postBox)
      postBox.classList.add("postBox")
+     postBox.setAttribute("id", id)
 
     //  Post profile part
      let profilePartBox = document.createElement("div");
@@ -84,29 +95,39 @@ function printPost(arr, cut) {
      heartImg.classList.add("heartImg")
      let likesNumber = document.createElement("span")
      likesNumber.classList.add("likesNumber")
-     likesNumber.innerText = parseInt(likes) + likeCounter
+     likesNumber.innerText = likes
      heartImg.setAttribute("src", "logos/heart.svg")
      likesBox.append(heartImg, likesNumber)
      descriptionBox.append(descriptionText, likesBox)
      descriptionText.innerText = "#" + caption.slice(0,100)
 
-    heartImg.addEventListener("click", (e) => {
-        likePostFn(e, likeCounter)
-    })
+    heartImg.addEventListener("click", likePostFn)
+
      postBox.append(profilePartBox, imageBox, descriptionBox)
+
+     if(counter) {
+         heartImg.classList.add("redHeart")
+     }
     })
    
 }
 
-function likePostFn(e, counter) {
-  if(!counter) {
-      counter++
-    e.currentTarget.classList.add("redHeart")
-    console.log(counter)
-  } else {
-      counter--
-      e.currentTarget.classList.remove("redHeart")
-  }
+function profilePart() {
+
+}
+
+function likePostFn(e) {
+    const id = +e.currentTarget.parentNode.parentNode.parentNode.id
+    let post = dataPosts.find(post => post.id === id);
+    if(!post.counter) {
+        post.counter++
+        post.likes = parseInt(post.likes) + post.counter
+    } else {
+        post.counter--
+        post.likes = parseInt(post.likes) - 1;
+    }
+    printPost(dataPosts, cutPosts)
+    localStorage.setItem("dataPosts", JSON.stringify(dataPosts));
 }
 
 fetchData()
